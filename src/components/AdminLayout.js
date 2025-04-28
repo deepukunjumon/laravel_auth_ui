@@ -32,6 +32,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import PersonIcon from "@mui/icons-material/Person";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { ROUTES } from "../constants/routes";
 import { logout as apiLogout } from "../services/auth";
@@ -46,16 +47,16 @@ const collapsedWidth = 60;
 const getUserFromToken = () => {
   try {
     const token = localStorage.getItem("token");
-    if (!token) return { name: "Admin", email: "" };
+    if (!token) return { name: "Admin", email: "", role: "admin" };
     const decoded = jwtDecode(token);
-    // Adjust the property name as per your JWT payload (e.g., decoded.name or decoded.user.name)
     return {
       name: decoded.name || decoded.username || decoded.email || "Admin",
       email: decoded.email || "",
       avatarUrl: decoded.avatarUrl || undefined,
+      role: decoded.role || "admin",
     };
   } catch (error) {
-    return { name: "Admin", email: "" };
+    return { name: "Admin", email: "", role: "admin" };
   }
 };
 
@@ -191,20 +192,37 @@ const AdminLayout = () => {
           {!isMobile && <DateTimeDisplay />}
           <Tooltip title={"Profile"}>
             <IconButton onClick={handleMenuOpen} sx={{ ml: 1 }}>
-              <Avatar
-                sx={{
-                  bgcolor: "#fff",
-                  color: theme.palette.primary.main,
-                  fontWeight: 700,
-                  width: isMobile ? 32 : 40,
-                  height: isMobile ? 32 : 40,
-                  fontSize: isMobile ? 16 : 20,
-                }}
-                alt={username}
-                src={usernameObj.avatarUrl || undefined}
-              >
-                {getInitials(username)}
-              </Avatar>
+              <Box sx={{ position: "relative", display: "inline-block" }}>
+                <Avatar
+                  sx={{
+                    bgcolor: "#fff",
+                    color: theme.palette.primary.main,
+                    fontWeight: 700,
+                    width: isMobile ? 32 : 40,
+                    height: isMobile ? 32 : 40,
+                    fontSize: isMobile ? 16 : 20,
+                  }}
+                  alt={username}
+                  src={usernameObj.avatarUrl || undefined}
+                >
+                  {getInitials(username)}
+                </Avatar>
+                {usernameObj.role === "admin" && (
+                  <VerifiedUserIcon
+                    sx={{
+                      position: "absolute",
+                      top: -4,
+                      right: -5,
+                      fontSize: isMobile ? 16 : 20,
+                      color: "success.main",
+                      bgcolor: "white",
+                      borderRadius: "50%",
+                      padding: 0.3,
+                      boxShadow: 1,
+                    }}
+                  />
+                )}
+              </Box>
             </IconButton>
           </Tooltip>
           <Menu
@@ -436,8 +454,8 @@ const AdminLayout = () => {
           marginLeft: isMobile
             ? 0
             : drawerOpen
-              ? `${drawerWidth - (drawerWidth - 15)}px`
-              : `${collapsedWidth - (collapsedWidth - 15)}px`,
+            ? `${drawerWidth - (drawerWidth - 15)}px`
+            : `${collapsedWidth - (collapsedWidth - 15)}px`,
           transition: "margin 0.2s",
         }}
       >

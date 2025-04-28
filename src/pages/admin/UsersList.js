@@ -9,6 +9,8 @@ import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
 import { ROUTES } from "../../constants/routes";
 import SnackbarAlert from "../../components/SnackbarAlert";
+import ConfirmDialog from "../../components/ConfirmDialog";
+import { STRINGS } from "../../constants/strings";
 
 const columns = [
   { field: "id", headerName: "ID" },
@@ -50,6 +52,9 @@ const UsersList = () => {
     severity: "success",
     message: "",
   });
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [rowToDelete, setRowToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const params = new URLSearchParams(location.search);
   const status = params.get("status") ?? "";
@@ -103,7 +108,6 @@ const UsersList = () => {
 
   useEffect(() => {
     fetchUsers();
-    // eslint-disable-next-line
   }, [search, status]);
 
   const handlePageChange = (event, newPage) => {
@@ -116,17 +120,25 @@ const UsersList = () => {
   };
 
   const handleEdit = (row) => {
-    // Example: navigate to an edit page or open a dialog
     navigate();
   };
 
-  const handleDelete = async (row) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+  const handleDelete = (row) => {
+    setRowToDelete(row);
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    setDeleteLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(apiConfig.DELETE_USER(row.id), {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.post(
+        apiConfig.DELETE_USER(rowToDelete.id),
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       fetchUsers();
       setSnack({
         open: true,
@@ -141,6 +153,9 @@ const UsersList = () => {
         message: err.response?.data?.message || "Failed to delete user.",
       });
     }
+    setDeleteLoading(false);
+    setConfirmOpen(false);
+    setRowToDelete(null);
   };
 
   return (
@@ -204,6 +219,14 @@ const UsersList = () => {
         onClose={() => setSnack((prev) => ({ ...prev, open: false }))}
         severity={snack.severity}
         message={snack.message}
+      />
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Delete User"
+        content={STRINGS.CONFIRM_DELETE_USER_CONTENT(rowToDelete?.name)}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        loading={deleteLoading}
       />
     </Box>
   );

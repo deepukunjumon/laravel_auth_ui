@@ -7,5 +7,5 @@ export const ROUTES = {
   ADMIN_USERS_ADD: "/admin/users/add",
   ADMIN_SETTINGS: "/admin/settings",
   ADMIN_PROFILE: "/admin/profile",
-  USER_PROFILE: "/user/profile",
+  USER_PROFILE: "admin/user-profile",
 };

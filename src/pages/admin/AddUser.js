@@ -13,6 +13,8 @@ import axios from "axios";
 import apiConfig from "../../config/apiConfig";
 import { useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
+import PersonIcon from "@mui/icons-material/Person";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 
 const roles = [
   { value: "admin", label: "Admin" },
@@ -58,74 +60,118 @@ const AddUser = () => {
 
   return (
     <Container maxWidth={false} sx={{ mt: 4, px: { xs: 1, sm: 3, md: 6 } }}>
-      <Paper sx={{ p: { xs: 2, sm: 4, md: 6 }, maxWidth: 900, mx: "auto" }}>
-        <Typography variant="h5" mb={2}>
-          Add New User
-        </Typography>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-        {success && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            {success}
-          </Alert>
-        )}
-        <form onSubmit={handleSubmit}>
-          <Stack spacing={2}>
-            <TextField
-              label="Name"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              fullWidth
+      <Typography variant="h5" mb={2}>
+        Add New User
+      </Typography>
+      <Box
+        display="flex"
+        flexDirection={{ xs: "column", md: "row" }}
+        alignItems="stretch"
+        sx={{ minHeight: { xs: 0, md: 400 } }}
+      >
+        <Box
+          sx={{
+            width: { xs: "100%", md: "50%" },
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            py: { xs: 2, md: 0 },
+          }}
+        >
+          <Box display="flex" alignItems="center">
+            <PersonIcon
+              sx={{
+                fontSize: { xs: 150, sm: 150, md: 360 },
+                color: "primary.main",
+                transition: "font-size 0.3s",
+              }}
             />
-            <TextField
-              label="Email"
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              fullWidth
+            <VerifiedUserIcon
+              sx={{
+                fontSize: { xs: 20, sm: 20, md: 50 },
+                color: "success.main",
+                ml: { xs: -4, sm: -2, md: -8 },
+                mt: { xs: -12, sm: -12, md: -25 },
+                visibility: form.role === "admin" ? "visible" : "hidden",
+                transition: "font-size 0.3s",
+              }}
             />
-            <TextField
-              label="Mobile"
-              name="mobile"
-              value={form.mobile}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
-            <TextField
-              select
-              label="Role"
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              required
-              fullWidth
-            >
-              {roles.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={loading}
-              fullWidth
-            >
-              {loading ? "Adding..." : "Add User"}
-            </Button>
-          </Stack>
-        </form>
-      </Paper>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            width: { xs: "100%", md: "50%" },
+            pl: { xs: 0, md: 6 },
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+          {success && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              {success}
+            </Alert>
+          )}
+          <form onSubmit={handleSubmit}>
+            <Stack spacing={2}>
+              <TextField
+                label="Name"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Email"
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Mobile"
+                name="mobile"
+                value={form.mobile}
+                onChange={handleChange}
+                required
+                fullWidth
+              />
+              <TextField
+                select
+                label="Role"
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                required
+                fullWidth
+              >
+                {roles.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                fullWidth
+              >
+                {loading ? "Adding..." : "Add User"}
+              </Button>
+            </Stack>
+          </form>
+        </Box>
+      </Box>
     </Container>
   );
 };

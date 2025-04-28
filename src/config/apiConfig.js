@@ -1,6 +1,6 @@
 const API_BASE_URL =
   window.location.hostname === "localhost"
-    ? "http://172.25.9.134:8000/api" // For local development
+    ? "http://192.168.1.34:8000/api" // For local development
     : "https://your-production-api.com/api"; // For production
 
 // Define API URLs
