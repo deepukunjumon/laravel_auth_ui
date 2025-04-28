@@ -76,7 +76,11 @@ const sidebarItems = [
     icon: <PeopleIcon />,
     children: [
       { label: "User List", icon: <GroupIcon />, path: ROUTES.USERS_LIST },
-      { label: "Add User", icon: <PersonAddIcon />, path: ROUTES.ADMIN_USERS },
+      {
+        label: "Add User",
+        icon: <PersonAddIcon />,
+        path: ROUTES.ADMIN_USERS_ADD,
+      },
       { label: "Edit User", icon: <EditIcon />, path: ROUTES.ADMIN_USERS },
     ],
   },

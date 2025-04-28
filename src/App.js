@@ -6,6 +6,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import Profile from "./pages/user/Profile";
 import AdminLayout from "./components/AdminLayout";
 import UsersList from "./pages/admin/UsersList";
+import AddUser from "./pages/admin/AddUser";
 import { ROUTES } from "./constants/routes"; // Import ROUTES from constants
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route element={<AdminLayout />}>
           <Route path={ROUTES.ADMIN_DASHBOARD} element={<Dashboard />} />
           <Route path={ROUTES.USERS_LIST} element={<UsersList />} />
+          <Route path={ROUTES.ADMIN_USERS_ADD} element={<AddUser />} />
           <Route
             path={ROUTES.ADMIN_USERS}
             element={

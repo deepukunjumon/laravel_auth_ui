@@ -10,6 +10,7 @@ const apiConfig = {
   LOGOUT_URL: `${API_BASE_URL}/logout`,
   USERS_COUNTS: `${API_BASE_URL}/admin/users/status/counts`,
   USERS_LIST: `${API_BASE_URL}/admin/users`,
+  ADD_USER: `${API_BASE_URL}/admin/add/user`,
 };
 
 export default apiConfig; // Export the apiConfig object

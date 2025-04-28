@@ -5,6 +5,9 @@ import axios from "axios";
 import { Box, Typography, Alert, Stack, IconButton } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useLocation, useNavigate } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
+import Fab from "@mui/material/Fab";
+import { ROUTES } from "../../constants/routes";
 
 const columns = [
   { field: "id", headerName: "ID" },
@@ -145,6 +148,21 @@ const UsersList = () => {
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
       />
+
+      {/* Floating Add User Button */}
+      <Fab
+        color="primary"
+        aria-label="add"
+        sx={{
+          position: "fixed",
+          bottom: { xs: 24, md: 32 },
+          right: { xs: 24, md: 32 },
+          zIndex: 1201,
+        }}
+        onClick={() => navigate(ROUTES.ADMIN_USERS_ADD)}
+      >
+        <AddIcon />
+      </Fab>
     </Box>
   );
 };
