@@ -20,6 +20,8 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff"; // Import visibil
 import TextFieldComponent from "../components/TextFieldComponent"; // TextFieldComponent for inputs
 import apiConfig from "../config/apiConfig"; // Correctly import apiConfig
 import { ROUTES } from "../constants/routes"; // Ensure ROUTES is correctly imported
+import illustration from "../assets/images/illustration.png"; // Add this import
+import SnackbarAlert from "../components/SnackbarAlert"; // Import the new component
 
 const Login = () => {
   const navigate = useNavigate();
@@ -99,17 +101,29 @@ const Login = () => {
       minHeight="100vh"
       bgcolor="#f7f7f7"
     >
-      <Snackbar open={snack.open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert
-          onClose={handleClose}
-          severity={snack.severity}
-          sx={{ width: "100%" }}
-        >
-          {snack.message}
-        </Alert>
-      </Snackbar>
+      <SnackbarAlert
+        open={snack.open}
+        onClose={handleClose}
+        severity={snack.severity}
+        message={snack.message}
+      />
+      {/* Illustration on the left */}
+      <Box
+        sx={{
+          display: { xs: "none", md: "flex" },
+          alignItems: "center",
+          justifyContent: "center",
+          mr: 6,
+        }}
+      >
+        <img
+          src={illustration}
+          alt="Login Illustration"
+          style={{ maxWidth: 350, width: "100%", height: "auto" }}
+        />
+      </Box>
 
-      <Paper elevation={3} sx={{ p: 4, width: 350, borderRadius: "15px" }}>
+      <Box sx={{ width: 350 }}>
         <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
           <Avatar
             sx={{
@@ -142,7 +156,7 @@ const Login = () => {
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
-                    onClick={() => setShowPassword(!showPassword)} // Toggle visibility
+                    onClick={() => setShowPassword(!showPassword)}
                     edge="end"
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -151,7 +165,6 @@ const Login = () => {
               ),
             }}
           />
-          {/* Button from MUI for login */}
           <Button
             type="submit"
             disabled={loading}
@@ -173,7 +186,7 @@ const Login = () => {
             Register
           </Link>
         </Typography>
-      </Paper>
+      </Box>
     </Box>
   );
 };

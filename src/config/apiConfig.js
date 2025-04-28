@@ -1,16 +1,21 @@
 const API_BASE_URL =
   window.location.hostname === "localhost"
-    ? "http://localhost:8000/api" // For local development
+    ? "http://172.25.9.134:8000/api" // For local development
     : "https://your-production-api.com/api"; // For production
 
-// Define your API URLs
+// Define API URLs
 const apiConfig = {
   BASE_URL: API_BASE_URL,
-  LOGIN_URL: `${API_BASE_URL}/login`, // Correctly combine the base URL with the endpoint
+
+  LOGIN_URL: `${API_BASE_URL}/login`,
   LOGOUT_URL: `${API_BASE_URL}/logout`,
+
   USERS_COUNTS: `${API_BASE_URL}/admin/users/status/counts`,
   USERS_LIST: `${API_BASE_URL}/admin/users`,
   ADD_USER: `${API_BASE_URL}/admin/add/user`,
+
+  GET_USER_DETAILS: (id) => `${API_BASE_URL}/admin/get/user/${id}`,
+  UPDATE_USER_DETAILS: (id) => `${API_BASE_URL}/admin/update/user/${id}`,
 };
 
-export default apiConfig; // Export the apiConfig object
+export default apiConfig;

@@ -1,8 +1,6 @@
 import React from "react";
 import {
   Card,
-  CardContent,
-  CardHeader,
   Typography,
   Box,
   CircularProgress,
@@ -39,80 +37,94 @@ const StatCard = ({
         borderRadius: 3,
         boxShadow: "0 2px 8px 0 rgba(31,41,55,0.07)",
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        height: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        cursor: "pointer",
+        height: 90,
+        minWidth: 180,
+        width: "100%",
+        px: 2,
+        py: 1,
         ...sx,
       }}
       {...rest}
     >
-      <CardHeader
-        avatar={
-          icon && (
-            <Box
-              sx={{
-                bgcolor: theme.palette[paletteColor].light,
-                color: theme.palette[paletteColor].main,
-                width: 42,
-                height: 42,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 50,
-                mr: 2,
-                fontSize: 30,
-              }}
-            >
-              {icon}
-            </Box>
-          )
-        }
-        title={
-          <Typography
-            variant="body2"
-            sx={{
-              fontSize: 18,
-              fontWeight: 600,
-              color: theme.palette[paletteColor].main,
-            }}
-          >
-            {title}
-          </Typography>
-        }
-        sx={{ pb: 0 }}
-      />
-      <CardContent>
+      {icon && (
+        <Box
+          sx={{
+            bgcolor: theme.palette[paletteColor].light,
+            color: theme.palette[paletteColor].main,
+            width: 38,
+            height: 38,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "50%",
+            fontSize: 24,
+            mr: 2,
+          }}
+        >
+          {icon}
+        </Box>
+      )}
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            fontSize: 14,
+            fontWeight: 600,
+            color: theme.palette[paletteColor].main,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {title}
+        </Typography>
         {loading ? (
           <Box
             sx={{
-              minHeight: 72,
+              minHeight: 32,
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "flex-start",
             }}
           >
-            <CircularProgress color={paletteColor} />
+            <CircularProgress size={20} color={paletteColor} />
           </Box>
         ) : (
-          <>
-            <Typography
-              variant="h4"
-              sx={{
-                fontWeight: 700,
-                color: "text.primary",
-                mb: 0.5,
-              }}
-            >
-              {value}
-            </Typography>
-            {subtitle && (
-              <Typography variant="body2" color="text.secondary" fontSize={15}>
-                {subtitle}
-              </Typography>
-            )}
-          </>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: "text.primary",
+              mb: 0.2,
+              fontSize: 20,
+              lineHeight: 1.1,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {value}
+          </Typography>
         )}
-      </CardContent>
+        {subtitle && !loading && (
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            fontSize={12}
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {subtitle}
+          </Typography>
+        )}
+      </Box>
     </Card>
   );
 };

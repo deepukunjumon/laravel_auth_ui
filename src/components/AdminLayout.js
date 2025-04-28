@@ -31,10 +31,13 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import PersonIcon from "@mui/icons-material/Person";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { ROUTES } from "../constants/routes";
 import { logout as apiLogout } from "../services/auth";
 import { jwtDecode } from "jwt-decode";
+import SnackbarAlert from "./SnackbarAlert"; // Adjust path as needed
+import DateTimeDisplay from "./DateTimeDisplay"; // Import the new component
 
 const drawerWidth = 280;
 const collapsedWidth = 60;
@@ -94,10 +97,23 @@ const AdminLayout = () => {
   const [openMenus, setOpenMenus] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const [snack, setSnack] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
 
   useEffect(() => {
     setDrawerOpen(!isMobile);
   }, [isMobile]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate(ROUTES.LOGIN, { replace: true });
+    }
+  }, [navigate]);
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
@@ -115,9 +131,40 @@ const AdminLayout = () => {
     if (isMobile) setDrawerOpen(false);
   };
 
+  const handleLogout = async () => {
+    setLogoutLoading(true);
+    setSnack({ open: false, severity: "success", message: "" });
+    try {
+      await apiLogout();
+      setSnack({
+        open: true,
+        severity: "success",
+        message: "Logged out successfully.",
+      });
+      setTimeout(() => {
+        setSnack((prev) => ({ ...prev, open: false }));
+        navigate(ROUTES.LOGIN);
+      }, 1200);
+    } catch {
+      setSnack({
+        open: true,
+        severity: "error",
+        message: "Logout failed. Please try again.",
+      });
+    }
+    setLogoutLoading(false);
+  };
+
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f7fafd" }}>
       <CssBaseline />
+      <SnackbarAlert
+        open={snack.open}
+        onClose={() => setSnack((prev) => ({ ...prev, open: false }))}
+        severity={snack.severity}
+        message={snack.message}
+        autoHideDuration={3000}
+      />
       {/* Navbar */}
       <AppBar
         position="fixed"
@@ -141,6 +188,7 @@ const AdminLayout = () => {
           <Typography variant="h6" noWrap sx={{ flexGrow: 1, fontWeight: 700 }}>
             Admin Dashboard
           </Typography>
+          {!isMobile && <DateTimeDisplay />}
           <Tooltip title={"Profile"}>
             <IconButton onClick={handleMenuOpen} sx={{ ml: 1 }}>
               <Avatar
@@ -148,6 +196,9 @@ const AdminLayout = () => {
                   bgcolor: "#fff",
                   color: theme.palette.primary.main,
                   fontWeight: 700,
+                  width: isMobile ? 32 : 40,
+                  height: isMobile ? 32 : 40,
+                  fontSize: isMobile ? 16 : 20,
                 }}
                 alt={username}
                 src={usernameObj.avatarUrl || undefined}
@@ -167,18 +218,28 @@ const AdminLayout = () => {
               <Typography variant="body2">{username}</Typography>
             </MenuItem>
             <Divider />
-            <MenuItem>Profile</MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleMenuClose();
+                navigate(ROUTES.ADMIN_PROFILE);
+              }}
+            >
+              <ListItemIcon>
+                <PersonIcon fontSize="small" />
+              </ListItemIcon>
+              Profile
+            </MenuItem>
             <MenuItem
               onClick={async () => {
                 handleMenuClose();
-                await apiLogout();
-                navigate(ROUTES.LOGIN);
+                await handleLogout();
               }}
+              disabled={logoutLoading}
             >
               <ListItemIcon>
                 <LogoutIcon fontSize="small" />
               </ListItemIcon>
-              Logout
+              {logoutLoading ? "Logging out..." : "Logout"}
             </MenuItem>
           </Menu>
         </Toolbar>
@@ -375,8 +436,8 @@ const AdminLayout = () => {
           marginLeft: isMobile
             ? 0
             : drawerOpen
-            ? `${drawerWidth - (drawerWidth - 15)}px`
-            : `${collapsedWidth - (collapsedWidth - 15)}px`,
+              ? `${drawerWidth - (drawerWidth - 15)}px`
+              : `${collapsedWidth - (collapsedWidth - 15)}px`,
           transition: "margin 0.2s",
         }}
       >

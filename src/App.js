@@ -8,27 +8,31 @@ import AdminLayout from "./components/AdminLayout";
 import UsersList from "./pages/admin/UsersList";
 import AddUser from "./pages/admin/AddUser";
 import { ROUTES } from "./constants/routes"; // Import ROUTES from constants
+import Register from "./pages/Register"; // Import the Register page
+import PrivateRoute from "./components/PrivateRoute"; // Import the PrivateRoute
+import AdminProfile from "./pages/admin/AdminProfile";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.REGISTER} element={<Register />} />
 
-        {/* Admin routes with AdminLayout */}
-        <Route element={<AdminLayout />}>
+        {/* Protected Admin routes */}
+        <Route
+          element={
+            <PrivateRoute>
+              <AdminLayout />
+            </PrivateRoute>
+          }
+        >
           <Route path={ROUTES.ADMIN_DASHBOARD} element={<Dashboard />} />
           <Route path={ROUTES.USERS_LIST} element={<UsersList />} />
           <Route path={ROUTES.ADMIN_USERS_ADD} element={<AddUser />} />
-          <Route
-            path={ROUTES.ADMIN_USERS}
-            element={
-              <div>
-                <h2>User Management</h2>
-                <p>This page is under construction</p>
-              </div>
-            }
-          />
+          <Route path={ROUTES.ADMIN_USERS} element={<UsersList />} />
+          <Route path={ROUTES.ADMIN_USERS} element={<UsersList />} />
+          <Route path={ROUTES.ADMIN_PROFILE} element={<AdminProfile />} />
           <Route
             path={ROUTES.ADMIN_SETTINGS}
             element={
@@ -38,18 +42,17 @@ function App() {
               </div>
             }
           />
-          <Route
-            path={ROUTES.ADMIN_PROFILE}
-            element={
-              <div>
-                <h2>Admin Profile</h2>
-                <p>This page is under construction</p>
-              </div>
-            }
-          />
         </Route>
 
-        <Route path={ROUTES.USER_PROFILE} element={<Profile />} />
+        {/* User profile route (if protected, wrap with PrivateRoute as well) */}
+        <Route
+          path={ROUTES.USER_PROFILE}
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );

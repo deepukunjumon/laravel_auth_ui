@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Typography, Box, Alert, IconButton, Stack } from "@mui/material";
+import { Grid, Typography, Box, Alert, IconButton, Stack, Avatar, useMediaQuery, CircularProgress } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
@@ -10,6 +10,7 @@ import StatCard from "../../components/StatCard";
 import apiConfig from "../../config/apiConfig";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
+import { useTheme } from "@mui/material/styles";
 
 const Dashboard = () => {
   const [userCounts, setUserCounts] = useState({
@@ -21,6 +22,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Fetch counts (reusable for refresh)
   const fetchUserCounts = async () => {
@@ -130,11 +133,25 @@ const Dashboard = () => {
         </Alert>
       )}
 
-      <Grid container spacing={3}>
+      <Grid
+        container
+        spacing={{ xs: 1.5, sm: 2, md: 3 }}
+        alignItems="stretch"
+      >
         {statCards.map((card, index) => (
-          <Grid item xs={12} sm={6} md={6} lg={3} xl={3} key={index}>
+          <Grid
+            item
+            xs={6}
+            key={index}
+            sx={{ display: "flex", justifyContent: "center" }}
+          >
             <Box
-              sx={{ minWidth: 300, cursor: "pointer" }}
+              sx={{
+                width: 250,      // fixed width for all cards
+                height: 130,     // fixed height for all cards
+                display: "flex",
+                alignItems: "stretch",
+              }}
               onClick={() => {
                 if (card.status !== undefined && card.status !== "") {
                   navigate(`${card.to}?status=${card.status}`);
@@ -161,9 +178,11 @@ const Dashboard = () => {
                 value={card.value}
                 icon={card.icon}
                 color={card.color}
-                loading={loading}
+                loading={loading && !isSmallScreen}
                 subtitle={card.subtitle}
                 sx={{
+                  width: "100%",
+                  height: "100%",
                   transition: "box-shadow 0.2s, transform 0.2s",
                   boxShadow: 1,
                   "&:hover": {
