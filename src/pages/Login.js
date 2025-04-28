@@ -11,8 +11,6 @@ import {
   InputAdornment,
 } from "@mui/material"; // Added TextField for input and TableContainer
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Visibility from "@mui/icons-material/Visibility"; // Import visibility icon
-import VisibilityOff from "@mui/icons-material/VisibilityOff"; // Import visibility off icon
 import TextFieldComponent from "../components/TextFieldComponent"; // TextFieldComponent for inputs
 import apiConfig from "../config/apiConfig"; // Correctly import apiConfig
 import { ROUTES } from "../constants/routes"; // Ensure ROUTES is correctly imported
@@ -154,19 +152,8 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            fullWidth
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setShowPassword(!showPassword)}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
           />
           <Button
             type="submit"
