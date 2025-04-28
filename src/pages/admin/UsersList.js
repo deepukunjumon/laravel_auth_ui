@@ -18,9 +18,9 @@ const columns = [
 
 const statusOptions = [
   { value: "", label: "All" },
-  { value: 1, label: "Active" },
-  { value: 0, label: "Disabled" },
-  { value: -1, label: "Deleted" },
+  { value: "1", label: "Active" },
+  { value: "0", label: "Disabled" },
+  { value: "-1", label: "Deleted" },
 ];
 
 const statusMap = {
@@ -37,38 +37,25 @@ const UsersList = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Effect: Sync status state with query string (but only if different)
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const statusParam = params.get("status");
-    // Only update state if different
-    if ((statusParam || "") !== (status || "")) {
-      setStatus(statusParam || "");
-    }
-    // eslint-disable-next-line
-  }, [location.search]);
+  const params = new URLSearchParams(location.search);
+  const status = params.get("status") ?? "";
 
-  // When status changes (from dropdown), update the query string if different
   const handleStatusChange = (newStatus) => {
-    if ((newStatus || "") !== (status || "")) {
-      const params = new URLSearchParams(location.search);
-      if (newStatus !== "" && newStatus !== null && newStatus !== undefined) {
-        params.set("status", newStatus);
-      } else {
-        params.delete("status");
-      }
-      navigate(
-        { pathname: location.pathname, search: params.toString() },
-        { replace: true }
-      );
-      // setStatus will be handled by the effect above
+    const params = new URLSearchParams(location.search);
+    if (newStatus !== "" && newStatus !== null && newStatus !== undefined) {
+      params.set("status", newStatus);
+    } else {
+      params.delete("status");
     }
+    navigate(
+      { pathname: location.pathname, search: params.toString() },
+      { replace: true }
+    );
   };
 
   const fetchUsers = async () => {
