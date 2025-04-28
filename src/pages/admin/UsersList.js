@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
 import { ROUTES } from "../../constants/routes";
+import SnackbarAlert from "../../components/SnackbarAlert";
 
 const columns = [
   { field: "id", headerName: "ID" },
@@ -16,7 +17,7 @@ const columns = [
   { field: "mobile", headerName: "Mobile" },
   { field: "role", headerName: "Role" },
   { field: "status", headerName: "Status" },
-  { field: "created_at", headerName: "Created At" },
+  { field: "", headerName: "Actions" },
 ];
 
 const statusOptions = [
@@ -44,6 +45,11 @@ const UsersList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const location = useLocation();
   const navigate = useNavigate();
+  const [snack, setSnack] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
 
   const params = new URLSearchParams(location.search);
   const status = params.get("status") ?? "";
@@ -109,6 +115,34 @@ const UsersList = () => {
     setPage(0);
   };
 
+  const handleEdit = (row) => {
+    // Example: navigate to an edit page or open a dialog
+    navigate();
+  };
+
+  const handleDelete = async (row) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(apiConfig.DELETE_USER(row.id), {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchUsers();
+      setSnack({
+        open: true,
+        severity: "success",
+        message: response.data?.message || "User deleted successfully.",
+      });
+    } catch (err) {
+      setError("Failed to delete user.");
+      setSnack({
+        open: true,
+        severity: "error",
+        message: err.response?.data?.message || "Failed to delete user.",
+      });
+    }
+  };
+
   return (
     <Box>
       <Stack
@@ -147,6 +181,8 @@ const UsersList = () => {
         rowsPerPage={rowsPerPage}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
       />
 
       {/* Floating Add User Button */}
@@ -163,6 +199,12 @@ const UsersList = () => {
       >
         <AddIcon />
       </Fab>
+      <SnackbarAlert
+        open={snack.open}
+        onClose={() => setSnack((prev) => ({ ...prev, open: false }))}
+        severity={snack.severity}
+        message={snack.message}
+      />
     </Box>
   );
 };

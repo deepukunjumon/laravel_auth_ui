@@ -18,16 +18,28 @@ import {
   Typography,
   Chip,
   TablePagination,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { getStatusChipProps } from "../utils/statusMappings";
+import { userStatusMap } from "../constants/status";
+
+const DELETED_STATUS_VALUE = -1;
+const DELETED_STATUS_LABEL = userStatusMap[DELETED_STATUS_VALUE]?.label || "Deleted";
 
 const DataTable = ({
   data = [],
   loading = false,
   columns = [],
-  onSearch = () => {},
-  onStatusFilter = () => {},
+  onSearch = () => { },
+  onStatusFilter = () => { },
   searchValue = "",
   statusValue = "",
   statusType = "user", // e.g. 'user', 'order', etc.
@@ -40,9 +52,11 @@ const DataTable = ({
   ],
   page = 0,
   rowsPerPage = 10,
-  onPageChange = () => {},
-  onRowsPerPageChange = () => {},
+  onPageChange = () => { },
+  onRowsPerPageChange = () => { },
   totalCount = null, // for server-side pagination
+  onEdit = () => { }, // callback for edit
+  onDelete = () => { }, // callback for delete
 }) => {
   // For client-side pagination, slice the data
   const paginatedData =
@@ -105,7 +119,7 @@ const DataTable = ({
             <TableRow>
               {columns.map((col) => (
                 <TableCell
-                  key={col.field}
+                  key={col.field || col.headerName}
                   sx={{
                     position: "sticky",
                     top: 0,
@@ -139,7 +153,7 @@ const DataTable = ({
                 <TableRow key={row.id}>
                   {columns.map((col) => (
                     <TableCell
-                      key={col.field}
+                      key={col.field || col.headerName}
                       sx={{
                         whiteSpace: "nowrap",
                         maxWidth: 220,
@@ -147,7 +161,28 @@ const DataTable = ({
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {col.field === statusField ? (
+                      {col.headerName === "Actions" || col.field === "actions" ? (
+                        (row.status === DELETED_STATUS_VALUE || row.status === DELETED_STATUS_LABEL) ? null : (
+                          <Stack direction="row" spacing={1}>
+                            <IconButton
+                              aria-label="edit"
+                              color="primary"
+                              onClick={() => onEdit(row)}
+                              size="small"
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              aria-label="delete"
+                              color="error"
+                              onClick={() => onDelete(row)}
+                              size="small"
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Stack>
+                        )
+                      ) : col.field === statusField ? (
                         <Chip
                           {...getStatusChipProps(statusType, row[col.field])}
                         />

@@ -21,7 +21,7 @@ const TextFieldComponent = ({
       onChange={onChange}
       margin="normal"
       variant="outlined"
-      size="medium"
+      size="small"
       InputProps={{
         endAdornment:
           label === "Password" ? (

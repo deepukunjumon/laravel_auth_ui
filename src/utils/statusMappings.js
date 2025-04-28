@@ -1,16 +1,6 @@
 // Utility for status mappings for different types
 
-export const userStatusMap = {
-  1: { label: "Active", color: "success" },
-  0: { label: "Disabled", color: "warning" },
-  "-1": { label: "Deleted", color: "error" },
-  Active: { label: "Active", color: "success" },
-  Disabled: { label: "Disabled", color: "warning" },
-  Deleted: { label: "Deleted", color: "error" },
-};
-
-// Add more mappings for other types as needed, e.g.:
-// export const orderStatusMap = { ... };
+import { userStatusMap } from '../constants/status';
 
 export function getStatusChipProps(type, status) {
   let map;

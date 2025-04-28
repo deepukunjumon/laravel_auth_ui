@@ -3,16 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // Corrected the import
 import {
   Box,
-  Paper,
   Typography,
   Link,
   Avatar,
   Button,
-  Snackbar,
-  Alert,
   IconButton,
   InputAdornment,
-  TextField,
 } from "@mui/material"; // Added TextField for input and TableContainer
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility"; // Import visibility icon
@@ -123,7 +119,14 @@ const Login = () => {
         />
       </Box>
 
-      <Box sx={{ width: 350 }}>
+      <Box
+        sx={{
+          width: { xs: "100%", sm: 350 },
+          mx: "auto",
+          p: { xs: 2, sm: 3 },
+          boxSizing: "border-box",
+        }}
+      >
         <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
           <Avatar
             sx={{
@@ -145,7 +148,7 @@ const Login = () => {
             required
           />
           {/* Password input with visibility toggle */}
-          <TextField
+          <TextFieldComponent
             label="Password"
             type={showPassword ? "text" : "password"}
             value={password}
